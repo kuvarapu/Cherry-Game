@@ -1,0 +1,20 @@
+{
+  "name": "cherry-game",
+  "version": "1.0.0",
+  "description": "A Cherry Game with React frontend and Node.js backend",
+  "scripts": {
+    "start": "npm run server",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd backend && npm start",
+    "client": "cd frontend && npm start",
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.4.0",
+    "concurrently": "^8.2.2"
+  }
+}

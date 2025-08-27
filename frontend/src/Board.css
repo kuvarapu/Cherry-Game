@@ -1,0 +1,362 @@
+/* Board Component Styles */
+
+.board-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.board-legend {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  padding: 15px;
+  background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+  border-radius: 10px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.legend-item {
+  font-weight: 600;
+  margin: 0 5px;
+}
+
+.cherry-legend {
+  color: #e91e63;
+}
+
+.finish-legend {
+  color: #4caf50;
+}
+
+.start-legend {
+  color: #2196f3;
+}
+
+.legend-separator {
+  margin: 0 10px;
+  color: #ccc;
+  font-weight: bold;
+}
+
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 3px;
+  padding: 20px;
+  background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+  border-radius: 15px;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.board-square {
+  width: 100%;
+  height: 50px;
+  border-radius: 8px;
+  position: relative;
+  cursor: default;
+  transition: all 0.3s ease;
+  animation: squareAppear 0.5s ease-out both;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #666;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.board-square:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+/* Special Space Styling */
+.cherry-space {
+  background: linear-gradient(145deg, #ffe6f2, #ffb3d9) !important;
+  border: 2px solid #e91e63 !important;
+  box-shadow: 0 3px 10px rgba(233, 30, 99, 0.3);
+  animation: cherryGlow 2s ease-in-out infinite alternate;
+}
+
+.finish-space {
+  background: linear-gradient(145deg, #e8f5e8, #c8e6c9) !important;
+  border: 2px solid #4caf50 !important;
+  box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+  animation: finishGlow 2s ease-in-out infinite alternate;
+}
+
+.start-space {
+  background: linear-gradient(145deg, #e3f2fd, #bbdefb) !important;
+  border: 2px solid #2196f3 !important;
+  box-shadow: 0 3px 10px rgba(33, 150, 243, 0.3);
+  animation: startGlow 2s ease-in-out infinite alternate;
+}
+
+/* Player Position Styling */
+.player1-here {
+  background: linear-gradient(145deg, #e3f2fd, #bbdefb) !important;
+  border: 3px solid #2196f3 !important;
+  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+  animation: player1Pulse 1.5s ease-in-out infinite;
+}
+
+.player2-here {
+  background: linear-gradient(145deg, #e8f5e8, #c8e6c9) !important;
+  border: 3px solid #4caf50 !important;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+  animation: player2Pulse 1.5s ease-in-out infinite;
+}
+
+/* Icons */
+.cherry-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  animation: cherryBounce 1s ease-in-out infinite;
+}
+
+.finish-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  font-weight: bold;
+  color: #4caf50;
+  animation: finishCelebration 2s ease-in-out infinite;
+}
+
+.start-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  font-weight: bold;
+  color: #2196f3;
+  animation: startRocket 2s ease-in-out infinite;
+}
+
+/* Player Tokens */
+.player-token {
+  position: absolute;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  z-index: 20;
+}
+
+.player1-token {
+  background: linear-gradient(45deg, #2196f3, #1976d2);
+  top: 2px;
+  left: 2px;
+  animation: player1TokenGlow 2s ease-in-out infinite alternate;
+}
+
+.player2-token {
+  background: linear-gradient(45deg, #4caf50, #388e3c);
+  top: 2px;
+  right: 2px;
+  animation: player2TokenGlow 2s ease-in-out infinite alternate;
+}
+
+.square-number {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  font-size: 8px;
+  color: #666;
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+/* Animations */
+@keyframes squareAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.8) rotate(-5deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes cherryGlow {
+  from {
+    box-shadow: 0 3px 10px rgba(233, 30, 99, 0.3);
+  }
+  to {
+    box-shadow: 0 5px 20px rgba(233, 30, 99, 0.6);
+  }
+}
+
+@keyframes finishGlow {
+  from {
+    box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+  }
+  to {
+    box-shadow: 0 5px 20px rgba(76, 175, 80, 0.6);
+  }
+}
+
+@keyframes startGlow {
+  from {
+    box-shadow: 0 3px 10px rgba(33, 150, 243, 0.3);
+  }
+  to {
+    box-shadow: 0 5px 20px rgba(33, 150, 243, 0.6);
+  }
+}
+
+@keyframes player1Pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.6);
+  }
+}
+
+@keyframes player2Pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+  }
+}
+
+@keyframes cherryBounce {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes finishCelebration {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+  25% {
+    transform: translate(-50%, -50%) scale(1.1) rotate(5deg);
+  }
+  75% {
+    transform: translate(-50%, -50%) scale(1.1) rotate(-5deg);
+  }
+}
+
+@keyframes startRocket {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes player1TokenGlow {
+  from {
+    box-shadow: 0 3px 8px rgba(33, 150, 243, 0.3);
+  }
+  to {
+    box-shadow: 0 5px 15px rgba(33, 150, 243, 0.6);
+  }
+}
+
+@keyframes player2TokenGlow {
+  from {
+    box-shadow: 0 3px 8px rgba(76, 175, 80, 0.3);
+  }
+  to {
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.6);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .board-container {
+    padding: 15px;
+    margin: 10px;
+  }
+  
+  .board-grid {
+    gap: 2px;
+    padding: 15px;
+  }
+  
+  .board-square {
+    height: 40px;
+    font-size: 8px;
+  }
+  
+  .player-token {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+  }
+  
+  .cherry-icon {
+    font-size: 16px;
+  }
+  
+  .finish-icon,
+  .start-icon {
+    font-size: 14px;
+  }
+  
+  .board-legend {
+    font-size: 12px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .board-grid {
+    gap: 1px;
+    padding: 10px;
+  }
+  
+  .board-square {
+    height: 35px;
+    font-size: 7px;
+  }
+  
+  .player-token {
+    width: 20px;
+    height: 20px;
+    font-size: 8px;
+  }
+  
+  .cherry-icon {
+    font-size: 14px;
+  }
+  
+  .finish-icon,
+  .start-icon {
+    font-size: 12px;
+  }
+}
