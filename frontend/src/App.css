@@ -9,7 +9,9 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: radial-gradient(1200px 600px at 50% -200px, rgba(255, 105, 180, 0.25), transparent 60%),
+              radial-gradient(1000px 500px at -100px 50%, rgba(118, 75, 162, 0.25), transparent 60%),
+              linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
   color: #333;
 }
@@ -420,6 +422,71 @@ body {
   position: relative;
   overflow: hidden;
 }
+
+/* Shared Buttons */
+.btn {
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 12px 20px rgba(0,0,0,0.2); }
+.btn:active { transform: translateY(0); box-shadow: 0 6px 12px rgba(0,0,0,0.12); }
+.btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.btn-primary { background: linear-gradient(45deg, #ff6b9d, #c44569); }
+.btn-success { background: linear-gradient(45deg, #43a047, #66bb6a); }
+.btn-danger  { background: linear-gradient(45deg, #e53935, #ef5350); }
+.btn-secondary { background: linear-gradient(45deg, #546e7a, #90a4ae); }
+.btn-large { padding: 14px 26px; font-size: 1.05rem; }
+.btn-loading { position: relative; }
+.btn-loading::after {
+  content: '';
+  position: absolute; inset: 4px;
+  border-radius: 8px;
+  border: 3px solid rgba(255,255,255,0.35);
+  border-top-color: transparent;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Cherry Rain Animated Background */
+.cherry-rain {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cherry {
+  position: absolute;
+  top: -40px;
+  animation-name: fall, sway;
+  animation-timing-function: linear, ease-in-out;
+  animation-iteration-count: infinite, infinite;
+}
+
+@keyframes fall {
+  0% { transform: translateY(-40px); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(110vh); opacity: 0; }
+}
+
+@keyframes sway {
+  0% { margin-left: 0; }
+  50% { margin-left: 20px; }
+  100% { margin-left: 0; }
+}
+
+/* Ensure content sits above rain */
+.app-container, .game-header { position: relative; z-index: 1; }
 
 .btn::before {
   content: '';

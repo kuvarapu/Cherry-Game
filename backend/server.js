@@ -7,7 +7,8 @@ const gameRoutes = require('./routes/game');
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+// Allow CORS with configurable origin for production
+app.use(cors({ origin: process.env.CORS_ORIGIN || '*'}));
 
 // MongoDB connection with fallback options
 // Temporarily disabled for development - using in-memory storage

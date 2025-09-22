@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from './api';
 import Board from './Board';
 import Login from './Login';
 import GameMenu from './GameMenu';
 import './App.css';
+import CherryRain from './CherryRain';
 
 function App() {
   const [token, setToken] = useState('');
@@ -20,7 +21,7 @@ function App() {
     if (game && game.mode === 'pvc' && !game.finished) {
       interval = setInterval(async () => {
         try {
-          const res = await axios.get(`http://localhost:4000/api/game/${game._id}`);
+          const res = await api.get(`/game/${game._id}`);
           if (res.data) {
             setGame(res.data);
             // Check if computer made a move
@@ -43,7 +44,7 @@ function App() {
   const startGame = async (mode) => {
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:4000/api/game', { mode, username });
+  const res = await api.post('/game', { mode, username });
       if (res.data.game) {
         setGame(res.data.game);
         setDice(null);
@@ -71,7 +72,7 @@ function App() {
     setShowDice(true);
     
     try {
-      const res = await axios.post(`http://localhost:4000/api/game/${game._id}/roll`);
+  const res = await api.post(`/game/${game._id}/roll`);
       if (res.data.game) {
         setGame(res.data.game);
         setDice(res.data.dice);
@@ -123,22 +124,30 @@ function App() {
 
   if (!token) {
     return (
-      <div className="app-container">
-        <Login setToken={setToken} setUsername={setUsername} />
-      </div>
+      <>
+        <CherryRain count={30} />
+        <div className="app-container">
+          <Login setToken={setToken} setUsername={setUsername} />
+        </div>
+      </>
     );
   }
 
   if (!game) {
     return (
-      <div className="app-container">
-        <GameMenu username={username} startGame={startGame} loading={loading} />
-      </div>
+      <>
+        <CherryRain count={25} />
+        <div className="app-container">
+          <GameMenu username={username} startGame={startGame} loading={loading} />
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="app-container">
+    <>
+      <CherryRain count={20} />
+      <div className="app-container">
       <div className="game-header">
         <h2 className="game-title">🍒 Cherry Game 🍒</h2>
       </div>
@@ -258,7 +267,8 @@ function App() {
           Logout
         </button>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
