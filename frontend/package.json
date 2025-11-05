@@ -9,7 +9,9 @@
     "react-scripts": "5.0.1"
   },
   "scripts": {
-    "start": "react-scripts start"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "serve": "npx serve -s build"
   },
   "browserslist": {
     "production": [

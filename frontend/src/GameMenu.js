@@ -1,4 +1,5 @@
 import React from 'react';
+import MagicButton from './MagicButton';
 
 function GameMenu({ username, startGame, loading }) {
   return (
@@ -16,38 +17,26 @@ function GameMenu({ username, startGame, loading }) {
         Choose your game mode to start playing!
       </p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
-        <button 
+        <MagicButton
           onClick={() => startGame('pvp')}
           disabled={loading}
           style={{
-            padding: '15px 30px',
-            fontSize: '18px',
-            backgroundColor: loading ? '#ccc' : '#4caf50',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            width: '200px'
+            width: '200px',
+            backgroundColor: loading ? '#ccc' : undefined
           }}
         >
           {loading ? '⏳ Starting...' : '👥 Two Player'}
-        </button>
-        <button 
+        </MagicButton>
+        <MagicButton
           onClick={() => startGame('pvc')}
           disabled={loading}
           style={{
-            padding: '15px 30px',
-            fontSize: '18px',
-            backgroundColor: loading ? '#ccc' : '#2196f3',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            width: '200px'
+            width: '200px',
+            backgroundColor: loading ? '#ccc' : undefined
           }}
         >
           {loading ? '⏳ Starting...' : '🤖 Play vs Computer'}
-        </button>
+        </MagicButton>
       </div>
     </div>
   );
