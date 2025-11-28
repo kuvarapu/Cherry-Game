@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cherry Game - Deploy Now</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .cherry {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .step h3 {
+            display: inline-block;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .step p {
+            color: #666;
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+        .deploy-btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 10px 10px 10px 0;
+            transition: background 0.3s;
+        }
+        .deploy-btn:hover {
+            background: #5568d3;
+        }
+        .secondary-btn {
+            background: #764ba2;
+        }
+        .secondary-btn:hover {
+            background: #664292;
+        }
+        .links {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 10px;
+        }
+        .links h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+        .link-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .link-item strong {
+            color: #333;
+        }
+        .link-item a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .link-item a:hover {
+            text-decoration: underline;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        .status.ready {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+        .status.pending {
+            background: #fff9c4;
+            color: #f57c00;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="cherry">🍒</div>
+        <h1>Cherry Game</h1>
+        <p class="subtitle">Deploy your game to the internet in 3 easy steps!</p>
+
+        <div class="step">
+            <span class="step-number">1</span>
+            <h3>Deploy Backend to Render</h3>
+            <p>Click the button below to deploy the backend API to Render.com (FREE):</p>
+            <a href="https://dashboard.render.com/select-repo?type=web" target="_blank" rel="noopener noreferrer" class="deploy-btn">
+                🚀 Deploy Backend to Render
+            </a>
+            <p style="margin-top: 10px;">
+                <strong>Repository:</strong> <code>kuvarapu/Cherry-Game</code><br>
+                <strong>Root Directory:</strong> <code>backend</code><br>
+                <strong>Build Command:</strong> <code>npm install</code><br>
+                <strong>Start Command:</strong> <code>node server.js</code>
+            </p>
+        </div>
+
+        <div class="step">
+            <span class="step-number">2</span>
+            <h3>Create MongoDB Database</h3>
+            <p>Get a free MongoDB database for storing game data:</p>
+            <a href="https://www.mongodb.com/cloud/atlas/register" target="_blank" rel="noopener noreferrer" class="deploy-btn secondary-btn">
+                🗄️ Create MongoDB Atlas Account
+            </a>
+            <p style="margin-top: 10px;">
+                1. Create a FREE M0 cluster<br>
+                2. Add database user: <code>cherrygame</code><br>
+                3. Allow access from anywhere (0.0.0.0/0)<br>
+                4. Get connection string and add to Render environment variables
+            </p>
+        </div>
+
+        <div class="step">
+            <span class="step-number">3</span>
+            <h3>Deploy Frontend to Vercel</h3>
+            <p>Deploy the game interface to Vercel (FREE, instant):</p>
+            <a href="https://vercel.com/new/clone?repository-url=https://github.com/kuvarapu/Cherry-Game&project-name=cherry-game&root-directory=frontend/public" target="_blank" rel="noopener noreferrer" class="deploy-btn">
+                ▲ Deploy Frontend to Vercel
+            </a>
+            <p style="margin-top: 10px;">
+                After deploying, update <code>frontend/public/config.js</code> with your Render backend URL.
+            </p>
+        </div>
+
+        <div class="links">
+            <h3>📋 Deployment Resources</h3>
+            <div class="link-item">
+                <div>
+                    <strong>GitHub Repository</strong>
+                    <span class="status ready">✓ Ready</span>
+                </div>
+                <a href="https://github.com/kuvarapu/Cherry-Game" target="_blank" rel="noopener noreferrer">View on GitHub →</a>
+            </div>
+            <div class="link-item">
+                <div>
+                    <strong>Deployment Guide</strong>
+                    <span class="status ready">✓ Ready</span>
+                </div>
+                <a href="https://github.com/kuvarapu/Cherry-Game/blob/main/PUBLIC_DEPLOY.md" target="_blank" rel="noopener noreferrer">Read Guide →</a>
+            </div>
+            <div class="link-item">
+                <div>
+                    <strong>Render Configuration</strong>
+                    <span class="status ready">✓ Ready</span>
+                </div>
+                <a href="https://github.com/kuvarapu/Cherry-Game/blob/main/render.yaml" target="_blank" rel="noopener noreferrer">View Config →</a>
+            </div>
+            <div class="link-item">
+                <div>
+                    <strong>Quick Deploy Guide</strong>
+                    <span class="status ready">✓ Ready</span>
+                </div>
+                <a href="https://github.com/kuvarapu/Cherry-Game/blob/main/QUICK_DEPLOY.md" target="_blank" rel="noopener noreferrer">View Guide →</a>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #fff3cd; border-radius: 10px; border-left: 4px solid #ffc107;">
+            <strong>⚡ Quick Deploy (Command Line):</strong>
+            <p style="margin-top: 10px; font-family: 'Courier New', monospace; background: white; padding: 10px; border-radius: 5px;">
+                npm install -g vercel<br>
+                vercel login<br>
+                vercel --prod
+            </p>
+        </div>
+    </div>
+</body>
+</html>

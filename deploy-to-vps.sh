@@ -16,6 +16,14 @@ EMAIL="${2:-${EMAIL:-admin@cherrygame.in}}"
 echo "🍒 Deploying Cherry Game"
 echo "========================"
 echo "Domain: $DOMAIN"
+
+Type: A
+Name: @cherrygame.in
+Value: YOUR_VPS_IP
+
+Type: A
+Name: www.cherrygame.in
+Value: YOUR_VPS_IP
 echo ""
 
 # Colors

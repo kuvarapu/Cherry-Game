@@ -38,34 +38,35 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// MongoDB connection with fallback options
-// Temporarily disabled for development - using in-memory storage
-/*
+// MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || config.MONGODB_URI;
 
-mongoose.connect(MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => {
-  console.log('✅ Connected to MongoDB successfully!');
-}).catch((err) => {
-  console.log('❌ MongoDB connection failed. Please make sure MongoDB is running.');
-  console.log('📋 Connection details:', MONGODB_URI);
-  console.log('');
-  console.log('🔧 Solutions:');
-  console.log('1. Install MongoDB locally: https://www.mongodb.com/try/download/community');
-  console.log('2. Use MongoDB Atlas (cloud): https://www.mongodb.com/atlas');
-  console.log('3. Set MONGODB_URI environment variable with your connection string');
-  console.log('');
-  console.log('💡 For MongoDB Atlas, your connection string should look like:');
-  console.log('mongodb+srv://username:password@cluster.mongodb.net/cherry_game');
-  console.log('');
-  process.exit(1);
-});
-*/
-
-console.log('🚀 Starting server with in-memory storage...');
-console.log('💡 Users will be stored in memory (will reset when server restarts)');
+if (MONGODB_URI) {
+  mongoose.connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(() => {
+    console.log('✅ Connected to MongoDB successfully!');
+    console.log('📊 Database:', MONGODB_URI.includes('mongodb.net') ? 'MongoDB Atlas (Cloud)' : 'Local MongoDB');
+  }).catch((err) => {
+    console.log('❌ MongoDB connection failed:', err.message);
+    console.log('📋 Connection URI:', MONGODB_URI.replace(/\/\/([^:]+):([^@]+)@/, '//$1:****@'));
+    console.log('');
+    console.log('🔧 Solutions:');
+    console.log('1. Install MongoDB locally: https://www.mongodb.com/try/download/community');
+    console.log('2. Use MongoDB Atlas (cloud): https://www.mongodb.com/atlas');
+    console.log('3. Set MONGODB_URI environment variable with your connection string');
+    console.log('');
+    console.log('💡 For MongoDB Atlas, your connection string should look like:');
+    console.log('mongodb+srv://username:password@cluster.mongodb.net/cherry-game');
+    console.log('');
+    console.log('⚠️ Falling back to in-memory storage...');
+  });
+} else {
+  console.log('🚀 Starting server with in-memory storage...');
+  console.log('💡 Users will be stored in memory (will reset when server restarts)');
+  console.log('🔧 To use MongoDB, set MONGODB_URI in your .env file');
+};
 
 // Request logging middleware (before routes)
 app.use((req, res, next) => {
