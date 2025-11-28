@@ -1,14 +1,42 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const session = require('express-session');
+const passport = require('./config/passport');
 const config = require('./config');
 const authRoutes = require('./routes/auth');
 const gameRoutes = require('./routes/game');
+const profileRoutes = require('./routes/profile');
 
 const app = express();
+
+// CORS configuration - must be before other middleware
+const corsOrigin = process.env.CORS_ORIGIN || process.env.FRONTEND_URL || '*';
+app.use(cors({
+  origin: corsOrigin,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: corsOrigin !== '*'
+}));
+
 app.use(express.json());
-// Allow CORS with configurable origin for production
-app.use(cors({ origin: process.env.CORS_ORIGIN || '*'}));
+
+// Session configuration for passport
+const isProduction = process.env.NODE_ENV === 'production';
+app.use(session({
+  secret: config.JWT_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    secure: isProduction, // HTTPS only in production
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // MongoDB connection with fallback options
 // Temporarily disabled for development - using in-memory storage
@@ -39,8 +67,11 @@ mongoose.connect(MONGODB_URI, {
 console.log('🚀 Starting server with in-memory storage...');
 console.log('💡 Users will be stored in memory (will reset when server restarts)');
 
-app.use('/api', authRoutes);
-app.use('/api', gameRoutes);
+// Request logging middleware (before routes)
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
+});
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -52,13 +83,17 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Request logging middleware
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
-  next();
+// API routes
+app.use('/api', authRoutes);
+app.use('/api', gameRoutes);
+app.use('/api', profileRoutes);
+
+// 404 handler (after all routes)
+app.use('*', (req, res) => {
+  res.status(404).json({ error: 'Route not found' });
 });
 
-// Error handling middleware
+// Error handling middleware (must be last)
 app.use((err, req, res, next) => {
   console.error('Error:', err.stack);
   res.status(500).json({ 
@@ -66,11 +101,6 @@ app.use((err, req, res, next) => {
     message: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error',
     timestamp: new Date().toISOString()
   });
-});
-
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({ error: 'Route not found' });
 });
 
 const PORT = process.env.PORT || config.PORT;

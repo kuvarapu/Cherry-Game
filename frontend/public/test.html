@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page</title>
+</head>
+<body>
+    <h1>Frontend Server Test</h1>
+    <p>If you can see this, the frontend server is working.</p>
+    <button onclick="testBackend()">Test Backend Connection</button>
+    <div id="result"></div>
+
+    <script>
+        async function testBackend() {
+            try {
+                const response = await fetch('http://localhost:4000/health');
+                const data = await response.json();
+                document.getElementById('result').innerHTML = 
+                    '<p style="color: green;">✅ Backend connected: ' + JSON.stringify(data) + '</p>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    '<p style="color: red;">❌ Backend error: ' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>

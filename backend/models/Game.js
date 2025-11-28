@@ -6,6 +6,7 @@ let games = [];
 const GameSchema = new mongoose.Schema({
   players: [String],
   positions: [Number],
+  board: [mongoose.Schema.Types.Mixed], // Game board with cherry spaces
   turn: Number,
   mode: String, // 'pvp' or 'pvc'
   finished: Boolean,
@@ -32,6 +33,9 @@ GameSchema.statics.create = function(gameData) {
 GameSchema.statics.findById = function(id) {
   const game = games.find(game => game._id === id);
   if (game) {
+    // Add frontend compatibility
+    game.id = game._id;
+    
     // Add the saveGame method to the returned game object
     game.saveGame = function() {
       const gameIndex = games.findIndex(g => g._id === this._id);
@@ -110,11 +114,6 @@ GameSchema.methods.saveGame = function() {
     games.push({ ...this });
   }
   return Promise.resolve(this);
-};
-
-// Override the save method to use our custom implementation
-GameSchema.methods.save = function() {
-  return this.saveGame();
 };
 
 module.exports = mongoose.model('Game', GameSchema);

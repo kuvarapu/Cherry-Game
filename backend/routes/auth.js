@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 const User = require('../models/User');
+const passport = require('../config/passport');
 
 const router = express.Router();
 
@@ -72,5 +73,46 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ error: 'Login failed. Please try again.' });
   }
 });
+
+// Google OAuth routes
+router.get('/auth/google',
+  (req, res, next) => {
+    const config = require('../config');
+    const isConfigured = config.GOOGLE_CLIENT_ID && 
+                        config.GOOGLE_CLIENT_ID !== 'YOUR_GOOGLE_CLIENT_ID';
+    
+    if (!isConfigured) {
+      return res.status(503).json({ 
+        error: 'Google OAuth is not configured',
+        message: 'Please configure GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in backend/.env file',
+        setupGuide: 'See SETUP_GOOGLE_OAUTH.html for instructions'
+      });
+    }
+    next();
+  },
+  passport.authenticate('google', { 
+    scope: ['profile', 'email'],
+    session: false
+  })
+);
+
+router.get('/auth/google/callback',
+  passport.authenticate('google', { 
+    session: false,
+    failureRedirect: 'http://localhost:8080?error=auth_failed'
+  }),
+  async (req, res) => {
+    try {
+      // Generate JWT token for the authenticated user
+      const token = jwt.sign({ username: req.user.username }, config.JWT_SECRET);
+      
+      // Redirect to frontend with token
+      res.redirect(`http://localhost:8080?token=${token}&username=${req.user.username}`);
+    } catch (error) {
+      console.error('Google callback error:', error);
+      res.redirect('http://localhost:8080?error=auth_failed');
+    }
+  }
+);
 
 module.exports = router;

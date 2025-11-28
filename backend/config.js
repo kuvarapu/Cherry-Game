@@ -1,6 +1,9 @@
 // MongoDB Configuration for Cherry Game
 // Update this file with your MongoDB Atlas connection string
 
+// Load environment variables from .env file
+require('dotenv').config();
+
 module.exports = {
   // MongoDB Connection String
   // Replace this with your MongoDB Atlas connection string
@@ -14,6 +17,12 @@ module.exports = {
   
   // Server Port (use environment variable for production)
   PORT: process.env.PORT || 4000,
+  
+  // Google OAuth Configuration
+  // Get these from https://console.cloud.google.com/
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID',
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || 'YOUR_GOOGLE_CLIENT_SECRET',
+  GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:4000/api/auth/google/callback',
   
   // Game Configuration
   MAX_PLAYERS: 2,

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google OAuth Setup - Cherry Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .status-box {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+        
+        .status-box.error {
+            background: #fee;
+            border-left: 4px solid #f44;
+            color: #c33;
+        }
+        
+        .status-box.success {
+            background: #efe;
+            border-left: 4px solid #4c4;
+            color: #363;
+        }
+        
+        .status-box.warning {
+            background: #ffc;
+            border-left: 4px solid #fa0;
+            color: #960;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        
+        .step h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .step ol {
+            margin-left: 20px;
+        }
+        
+        .step li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+        
+        .emoji {
+            font-size: 1.3em;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍒 Google OAuth Setup</h1>
+        <p class="subtitle">Follow these steps to enable "Sign in with Google"</p>
+        
+        <div id="statusBox" class="status-box warning">
+            <span class="emoji">⚠️</span>
+            <strong>Google OAuth is not configured yet.</strong> Follow the steps below to set it up.
+        </div>
+
+        <div class="step">
+            <h3>📋 Step 1: Create Google Cloud Project</h3>
+            <ol>
+                <li>Go to <a href="https://console.cloud.google.com/" target="_blank" rel="noopener">Google Cloud Console</a></li>
+                <li>Click <strong>"Create Project"</strong></li>
+                <li>Name it <code>Cherry Game</code></li>
+                <li>Click <strong>"Create"</strong></li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h3>🔐 Step 2: Create OAuth Credentials</h3>
+            <ol>
+                <li>In Google Cloud Console, go to <strong>"APIs & Services"</strong> → <strong>"Credentials"</strong></li>
+                <li>Click <strong>"Create Credentials"</strong> → <strong>"OAuth client ID"</strong></li>
+                <li>If prompted, configure the <strong>OAuth consent screen</strong>:
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li>Choose <strong>"External"</strong> user type</li>
+                        <li>Fill in App name: <code>Cherry Game</code></li>
+                        <li>Add your email as support email</li>
+                        <li>Add scopes: <code>email</code> and <code>profile</code></li>
+                        <li>Add yourself as a test user</li>
+                    </ul>
+                </li>
+                <li>Back to Credentials, choose <strong>"Web application"</strong></li>
+                <li>Name: <code>Cherry Game Web Client</code></li>
+                <li>Add <strong>Authorized redirect URIs</strong>:</li>
+                <div class="code-block">http://localhost:4000/api/auth/google/callback</div>
+                <li>Click <strong>"Create"</strong></li>
+                <li class="highlight">📝 Copy the <strong>Client ID</strong> and <strong>Client Secret</strong></li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h3>⚙️ Step 3: Configure Backend</h3>
+            <p><strong>Option A: Using .env file (Recommended)</strong></p>
+            <ol>
+                <li>Create a file named <code>.env</code> in the <code>backend</code> folder</li>
+                <li>Add your credentials:</li>
+                <div class="code-block">GOOGLE_CLIENT_ID=your_client_id_here.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your_client_secret_here
+JWT_SECRET=your_secret_key_here
+PORT=4000
+GOOGLE_CALLBACK_URL=http://localhost:4000/api/auth/google/callback</div>
+            </ol>
+            
+            <p style="margin-top: 20px;"><strong>Option B: Direct in config.js</strong></p>
+            <ol>
+                <li>Open <code>backend/config.js</code></li>
+                <li>Replace the placeholder values with your actual credentials</li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h3>🚀 Step 4: Restart Backend</h3>
+            <ol>
+                <li>Stop the current backend server (Ctrl+C)</li>
+                <li>Restart it:</li>
+                <div class="code-block">cd backend
+node server.js</div>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h3>✅ Step 5: Test It!</h3>
+            <ol>
+                <li>Go to <a href="http://localhost:8080">http://localhost:8080</a></li>
+                <li>Click <strong>"Sign in with Google"</strong></li>
+                <li>Select your Google account</li>
+                <li>Grant permissions</li>
+                <li>You should be logged in automatically! 🎉</li>
+            </ol>
+        </div>
+
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #eee;">
+            <h3 style="margin-bottom: 15px;">📚 Helpful Links</h3>
+            <a href="https://console.cloud.google.com/" target="_blank" rel="noopener" class="btn">Google Cloud Console</a>
+            <a href="GOOGLE_OAUTH_SETUP.md" target="_blank" rel="noopener" class="btn">Detailed Guide</a>
+            <a href="http://localhost:8080" target="_blank" rel="noopener" class="btn">Launch Game</a>
+        </div>
+
+        <div class="status-box warning" style="margin-top: 30px;">
+            <span class="emoji">💡</span>
+            <strong>Tip:</strong> For the first time, Google will show "This app isn't verified" warning. 
+            Click <strong>"Advanced"</strong> → <strong>"Go to Cherry Game (unsafe)"</strong> to continue. 
+            This is normal for development.
+        </div>
+    </div>
+</body>
+</html>

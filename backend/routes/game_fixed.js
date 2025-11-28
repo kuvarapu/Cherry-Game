@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Game = require('../models/Game');
-const { authenticateToken } = require('../middleware/auth');
+const auth = require('../middleware/auth');
 
 // Apply auth middleware to all routes
-router.use(authenticateToken);
+router.use(auth);
 
 // AI Strategy for computer player
 const calculateAIMove = (currentPosition, opponentPosition, gameMode) => {
@@ -54,68 +54,8 @@ function updateBoardWithPositions(game) {
     game.board[game.positions[0] - 1] = 1; // Player 1
   }
   if (game.positions[1] && game.positions[1] > 0 && game.positions[1] <= 100) {
-    const idx = game.positions[1] - 1;
-    // If player 1 is already on this cell, mark as 'both'
-    if (game.board[idx] === 1) {
-      game.board[idx] = 'both';
-    } else {
-      game.board[idx] = 2; // Player 2/Computer
-    }
+    game.board[game.positions[1] - 1] = 2; // Player 2/Computer
   }
-}
-
-function buildBoardFromPositions(positions = []) {
-  const board = new Array(100).fill(null);
-  const cherrySpaces = [14, 29, 44, 59, 74, 89];
-  cherrySpaces.forEach(pos => board[pos] = 'cherry');
-
-  const [playerOne, playerTwo] = positions;
-  if (Number.isInteger(playerOne) && playerOne >= 1 && playerOne <= 100) {
-    board[playerOne - 1] = 1;
-  }
-  if (Number.isInteger(playerTwo) && playerTwo >= 1 && playerTwo <= 100) {
-    board[playerTwo - 1] = board[playerTwo - 1] === 1 ? 'both' : 2;
-  }
-
-  return board;
-}
-
-function serializeGame(game) {
-  if (!game) {
-    return null;
-  }
-
-  updateBoardWithPositions(game);
-
-  const mode = game.mode === 'pvc' ? 'single' : 'multi';
-  const positions = Array.isArray(game.positions) && game.positions.length === 2
-    ? [...game.positions]
-    : [1, 1];
-  const players = Array.isArray(game.players) && game.players.length === 2
-    ? [...game.players]
-    : [game.players?.[0] || 'Player 1', mode === 'single' ? 'Computer' : 'Player 2'];
-  const moves = Array.isArray(game.moves) ? game.moves.map(move => ({ ...move })) : [];
-  const board = Array.isArray(game.board) && game.board.length === 100
-    ? [...game.board]
-    : buildBoardFromPositions(positions);
-
-  return {
-    id: game._id || game.id,
-    _id: game._id || game.id,
-    mode,
-    backendMode: game.mode,
-    players,
-    positions,
-    board,
-    moves,
-    turn: typeof game.turn === 'number' ? game.turn : 0,
-    finished: Boolean(game.finished),
-    winner: game.winner || '',
-    lastRoll: game.lastRoll ?? null,
-    lastMove: game.lastMove || (moves.length ? moves[moves.length - 1] : null),
-    createdAt: game.createdAt,
-    message: game.message,
-  };
 }
 
 // Computer AI move function
@@ -138,17 +78,17 @@ async function makeComputerMove(game) {
     const diceComp = Math.floor(Math.random() * 6) + 1;
     const fromPositionComp = currentPosition;
     let newPositionComp = fromPositionComp + diceComp;
-    let cherryBonusComp = false;
+    let cherryBonusComp = 0;
 
-    // Check for cherry bonus (every 15th space: 15, 30, 45, 60, 75, 90)
-    if (newPositionComp % 15 === 0 && newPositionComp < 100) {
-      cherryBonusComp = true;
-      newPositionComp += 5; // Cherry bonus
+    // Check for cherry bonus
+    if (newPositionComp % 15 === 0 && newPositionComp <= 90) {
+      cherryBonusComp = 10;
+      newPositionComp += cherryBonusComp;
     }
 
-    // Handle winning
-    if (newPositionComp >= 100) {
-      newPositionComp = 100;
+    // Ensure we don't exceed 100
+    if (newPositionComp > 100) {
+      newPositionComp = fromPositionComp; // Stay in place if overshooting
     }
 
     // Update position
@@ -158,7 +98,7 @@ async function makeComputerMove(game) {
     updateBoardWithPositions(game);
     
     // Record the computer move
-    const moveRecord = {
+    game.moves.push({
       player: game.players[1],
       dice: diceComp,
       fromPosition: fromPositionComp,
@@ -166,11 +106,7 @@ async function makeComputerMove(game) {
       cherryBonus: cherryBonusComp,
       timestamp: new Date(),
       aiReason: aiDecision.reason
-    };
-
-    game.moves.push(moveRecord);
-    game.lastMove = moveRecord;
-    game.lastRoll = diceComp;
+    });
     
     // Check for win
     if (newPositionComp === 100) {
@@ -237,11 +173,12 @@ router.post('/game', async (req, res) => {
     // Update board with initial player positions
     updateBoardWithPositions(game);
     
-  console.log(`✅ Game created successfully: ${game._id} for ${username} in ${gameMode} mode`);
+    console.log(`✅ Game created successfully: ${game._id} for ${username} in ${gameMode} mode`);
     
-  const serializedGame = serializeGame(game);
+    // Ensure frontend compatibility by adding id field
+    game.id = game._id;
     
-  res.json({ game: serializedGame, message: 'Game started successfully!' });
+    res.json({ game, message: 'Game started successfully!' });
   } catch (error) {
     console.error('Error starting game:', error);
     res.status(500).json({ error: 'Failed to start game' });
@@ -291,11 +228,12 @@ router.post('/game/start', async (req, res) => {
     // Update board with initial player positions
     updateBoardWithPositions(game);
     
-  console.log(`✅ Game created successfully at /game/start: ${game._id} for ${username} in ${gameMode} mode`);
+    console.log(`✅ Game created successfully at /game/start: ${game._id} for ${username} in ${gameMode} mode`);
     
-  const serializedGame = serializeGame(game);
+    // Ensure frontend compatibility by adding id field
+    game.id = game._id;
     
-  res.json({ game: serializedGame, message: 'Game started successfully!' });
+    res.json({ game, message: 'Game started successfully!' });
   } catch (error) {
     console.error('Error starting game at /game/start:', error);
     res.status(500).json({ error: 'Failed to start game' });
@@ -305,12 +243,8 @@ router.post('/game/start', async (req, res) => {
 // Get all games (for debugging/admin purposes)
 router.get('/games', async (req, res) => {
   try {
-    const games = await Game.find({});
-    const sorted = Array.isArray(games)
-      ? [...games].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)).slice(0, 20)
-      : [];
-    const serializedGames = sorted.map(serializeGame);
-    res.json({ games: serializedGames, count: serializedGames.length });
+    const games = await Game.find({}).sort({ createdAt: -1 }).limit(20);
+    res.json({ games, count: games.length });
   } catch (error) {
     console.error('Error fetching games:', error);
     res.status(500).json({ error: 'Failed to fetch games' });
@@ -324,9 +258,11 @@ router.get('/game/:id', async (req, res) => {
     if (!game) {
       return res.status(404).json({ error: 'Game not found' });
     }
-
-    const serializedGame = serializeGame(game);
-    res.json({ game: serializedGame });
+    
+    // Ensure frontend compatibility
+    game.id = game._id;
+    
+    res.json({ game });
   } catch (error) {
     console.error('Error getting game:', error);
     res.status(500).json({ error: 'Failed to get game' });
@@ -349,9 +285,8 @@ router.post('/game/:id/reset', async (req, res) => {
     game.moves = [];
     
     try {
-      await game.saveGame();
-      const serializedGame = serializeGame(game);
-      res.json({ game: serializedGame, message: 'Game reset successfully!' });
+      await game.save();
+      res.json({ game, message: 'Game reset successfully!' });
     } catch (saveError) {
       console.error('Error saving reset game:', saveError);
       res.status(500).json({ error: 'Failed to reset game' });
@@ -380,14 +315,12 @@ router.get('/game/:id/moves', async (req, res) => {
 router.get('/user/:username/games', async (req, res) => {
   try {
     const { username } = req.params;
-    const games = await Game.find({});
-    const filtered = Array.isArray(games)
-      ? games.filter(game => Array.isArray(game.players) && game.players.includes(username) && game.finished)
-      : [];
-    const sorted = filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)).slice(0, 10);
-    const serializedGames = sorted.map(serializeGame);
+    const games = await Game.find({ 
+      players: username,
+      finished: true 
+    }).sort({ createdAt: -1 }).limit(10);
     
-    res.json({ games: serializedGames });
+    res.json({ games });
   } catch (error) {
     console.error('Error getting user games:', error);
     res.status(500).json({ error: 'Failed to get user games' });
@@ -449,18 +382,14 @@ router.post('/game/:id/roll', async (req, res) => {
     }
     
     // Record the move
-    const moveRecord = {
+    game.moves.push({
       player: game.players[game.turn],
       dice: dice,
       fromPosition: fromPosition,
       toPosition: newPosition,
       cherryBonus: cherryBonus,
       timestamp: new Date()
-    };
-
-    game.moves.push(moveRecord);
-    game.lastMove = moveRecord;
-    game.lastRoll = dice;
+    });
 
     // Check for win (exact position 100 required)
     if (newPosition === 100) {
@@ -491,11 +420,9 @@ router.post('/game/:id/roll', async (req, res) => {
       }, 1500);
     }
 
-    const serializedGame = serializeGame(game);
-
     res.json({ 
       dice, 
-      game: serializedGame, 
+      game, 
       cherryBonus,
       message: 'Dice rolled successfully' 
     });
@@ -593,11 +520,9 @@ router.post('/:id/move', async (req, res) => {
       }, 1500);
     }
 
-    const serializedGame = serializeGame(game);
-
     res.json({ 
       dice, 
-      game: serializedGame, 
+      game, 
       cherryBonus,
       message: 'Move completed successfully' 
     });

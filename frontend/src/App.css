@@ -25,9 +25,38 @@ body {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+.status-message {
+  margin: 15px auto;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  max-width: 520px;
+  text-align: center;
+  border: 1px solid transparent;
+}
+
+.status-message.success {
+  background: #d4edda;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+.status-message.error {
+  background: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+.status-message.info {
+  background: #e3f2fd;
+  color: #0d47a1;
+  border-color: #bbdefb;
 }
 
 /* Game Header */
